@@ -821,6 +821,59 @@ table.data tbody tr:hover { background: var(--background-primary-subtle); }
 .channel-row:first-of-type { border-top: none; padding-top: 0; }
 .channel-row .status-select { width: 100%; max-width: 150px; }
 
+/* --- catálogo de productos --- */
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
+.product-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); display: flex; flex-direction: column; }
+.product-card-image { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; background-size: cover; background-position: center; color: #fff; }
+.product-card-body { padding: var(--space-3) var(--space-4); flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.product-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-2); }
+.product-card-name { font-weight: 700; font-size: .88rem; }
+.product-card-price { font-size: .95rem; font-weight: 700; color: var(--primary); margin-top: 4px; }
+.product-card-stock { font-size: .74rem; color: var(--foreground-muted); }
+.product-card-stock.low { color: var(--amber, #a8790a); font-weight: 600; }
+.product-card-stock.out { color: var(--destructive); font-weight: 600; }
+.product-card-actions { display: flex; gap: 6px; }
+.product-image-preview { width: 100%; height: 110px; border-radius: var(--radius); background: var(--background-neutral); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--foreground-muted); margin-top: var(--space-2); background-size: cover; background-position: center; overflow: hidden; }
+
+/* --- layout de dos columnas reutilizable (Mi cuenta, Plan y facturación, Ayuda) --- */
+.two-col-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5); align-items: start; }
+@media (max-width: 900px) { .two-col-layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* --- ayuda / soporte --- */
+.help-col-right .account-card { position: sticky; top: var(--space-6); max-height: calc(100vh - var(--space-6) * 2); display: flex; flex-direction: column; overflow-x: hidden; }
+.help-col-right .faq-list { overflow-y: auto; overflow-x: hidden; }
+.help-search { width: 100%; margin-bottom: var(--space-4); flex-shrink: 0; }
+.faq-list .accordion-item:first-child { border-top: none; }
+.contact-methods { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-5); }
+.contact-method-card { flex: 1; min-width: 160px; border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-4); text-align: center; }
+.contact-method-card .cm-icon { font-size: 1.4rem; margin-bottom: var(--space-2); }
+.contact-method-card .cm-title { font-weight: 700; font-size: .85rem; margin-bottom: 2px; }
+.contact-method-card .cm-detail { font-size: .76rem; color: var(--foreground-muted); }
+.ticket-row { display: flex; justify-content: space-between; align-items: flex-start; padding: var(--space-3) 0; border-bottom: 1px solid var(--background-neutral); font-size: .82rem; }
+.ticket-row:last-child { border-bottom: none; }
+.ticket-subject { font-weight: 600; }
+.ticket-meta { font-size: .72rem; color: var(--foreground-muted); margin-top: 2px; }
+
+/* --- plan y facturación --- */
+.plan-summary { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4); }
+.plan-name { font-family: var(--font-sora); font-size: 1.2rem; font-weight: 700; }
+.plan-price { font-size: .85rem; color: var(--foreground-secondary); margin-top: 2px; }
+.plan-features { list-style: none; margin-top: var(--space-3); font-size: .8rem; color: var(--foreground-secondary); }
+.plan-features li { padding: 3px 0; }
+.usage-row { margin-bottom: var(--space-4); }
+.usage-row:last-child { margin-bottom: 0; }
+.usage-label { display: flex; justify-content: space-between; font-size: .8rem; margin-bottom: 6px; }
+.usage-label .u-count { color: var(--foreground-muted); }
+.usage-bar-track { height: 8px; background: var(--background-neutral); border-radius: var(--radius-pill); overflow: hidden; }
+.usage-bar-fill { height: 100%; background: var(--primary); border-radius: var(--radius-pill); }
+.usage-bar-fill.high { background: var(--destructive); }
+.payment-method-row { display: flex; justify-content: space-between; align-items: center; }
+.payment-method-detail { display: flex; align-items: center; gap: var(--space-3); font-size: .85rem; }
+.card-brand-chip { background: var(--background-neutral); border-radius: var(--radius); padding: 4px 10px; font-weight: 700; font-size: .72rem; }
+.plan-picker-title { font-weight: 700; font-size: .88rem; }
+.plan-picker-price { font-size: .8rem; color: var(--foreground-secondary); }
+.plan-picker-features { font-size: .74rem; color: var(--foreground-muted); margin-top: 4px; }
+
 /* toggle switch */
 .switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
 .switch input { opacity: 0; width: 0; height: 0; }
@@ -931,10 +984,13 @@ table.data tbody tr:hover { background: var(--background-primary-subtle); }
 
     <div class="nav-group">
       <div class="nav-label">NEGOCIO</div>
+      <div class="nav-item" data-view="products"><span class="nav-icon">🏷️</span> <span class="nav-text">Catálogo</span></div>
       <div class="nav-item" data-view="orders"><span class="nav-icon">▣</span> <span class="nav-text">Pedidos</span></div>
       <div class="nav-item" data-view="reports"><span class="nav-icon">📊</span> <span class="nav-text">Reportes</span></div>
       <div class="nav-item" data-view="settings"><span class="nav-icon">◎</span> <span class="nav-text">Configuración</span></div>
       <div class="nav-item" data-view="myaccount"><span class="nav-icon">👤</span> <span class="nav-text">Mi cuenta</span></div>
+      <div class="nav-item" data-view="billing"><span class="nav-icon">💳</span> <span class="nav-text">Plan y facturación</span></div>
+      <div class="nav-item" data-view="help"><span class="nav-icon">❓</span> <span class="nav-text">Ayuda y soporte</span></div>
     </div>
 
     <div class="sidebar-footer" id="sidebar-footer-btn" title="Ir a Mi cuenta">
@@ -1246,6 +1302,25 @@ table.data tbody tr:hover { background: var(--background-primary-subtle); }
       </div>
     </div>
 
+    <!-- ============ CATÁLOGO DE PRODUCTOS ============ -->
+    <div class="view" id="view-products">
+      <div class="topbar">
+        <div><h1>Catálogo de productos</h1><div class="sub">Nombre, precio, stock e imagen — de acá salen los pedidos</div></div>
+        <div class="topbar-actions">
+          <button class="btn btn-ghost" id="btn-import-products">⬆ Importar CSV</button>
+          <input type="file" id="product-import-input" accept=".csv,text/csv" style="display:none">
+          <button class="btn btn-accent" id="btn-new-product">+ Nuevo producto</button>
+        </div>
+      </div>
+      <div style="padding: var(--space-6)">
+        <div class="table-toolbar">
+          <input class="search-box" id="product-search" placeholder="Buscar producto...">
+          <div class="results-count" id="product-results-count"></div>
+        </div>
+        <div class="product-grid" id="product-grid"></div>
+      </div>
+    </div>
+
     <!-- ============ ORDERS ============ -->
     <div class="view" id="view-orders">
       <div class="topbar">
@@ -1365,60 +1440,173 @@ table.data tbody tr:hover { background: var(--background-primary-subtle); }
       <div class="topbar">
         <div><h1>Mi cuenta</h1><div class="sub">Tu perfil, contraseña y preferencias de notificación</div></div>
       </div>
-      <div style="padding: var(--space-6); max-width: 640px;">
+      <div style="padding: var(--space-6);">
+        <div class="two-col-layout">
 
-        <div class="account-card">
-          <div class="account-avatar-row">
-            <div class="account-avatar-wrap">
-              <div class="account-avatar" id="account-avatar-preview">JM</div>
-              <button class="avatar-edit-btn" id="account-avatar-edit-btn" title="Cambiar color de avatar">✎</button>
-              <div class="avatar-palette" id="avatar-palette" style="display:none">
-                <div class="avatar-swatch" data-avatar-bg="var(--gradient-primary)" style="background:var(--gradient-primary)"></div>
-                <div class="avatar-swatch" data-avatar-bg="var(--gradient-accent)" style="background:var(--gradient-accent)"></div>
-                <div class="avatar-swatch" data-avatar-bg="var(--gradient-secondary)" style="background:var(--gradient-secondary)"></div>
-                <div class="avatar-swatch" data-avatar-bg="var(--primary-light)" style="background:var(--primary-light)"></div>
-                <div class="avatar-swatch" data-avatar-bg="var(--accent-light)" style="background:var(--accent-light)"></div>
+          <div class="col-left">
+            <div class="account-card">
+              <div class="account-avatar-row">
+                <div class="account-avatar-wrap">
+                  <div class="account-avatar" id="account-avatar-preview">JM</div>
+                  <button class="avatar-edit-btn" id="account-avatar-edit-btn" title="Cambiar color de avatar">✎</button>
+                  <div class="avatar-palette" id="avatar-palette" style="display:none">
+                    <div class="avatar-swatch" data-avatar-bg="var(--gradient-primary)" style="background:var(--gradient-primary)"></div>
+                    <div class="avatar-swatch" data-avatar-bg="var(--gradient-accent)" style="background:var(--gradient-accent)"></div>
+                    <div class="avatar-swatch" data-avatar-bg="var(--gradient-secondary)" style="background:var(--gradient-secondary)"></div>
+                    <div class="avatar-swatch" data-avatar-bg="var(--primary-light)" style="background:var(--primary-light)"></div>
+                    <div class="avatar-swatch" data-avatar-bg="var(--accent-light)" style="background:var(--accent-light)"></div>
+                  </div>
+                </div>
+                <div class="account-identity">
+                  <div class="account-name" id="account-name-display">Julia Méndez</div>
+                  <div class="account-email-display" id="account-email-display">julia@chatg2i.uy</div>
+                </div>
+                <div class="status-toggle" id="status-toggle">
+                  <div class="status-pill" data-status="disponible">🟢 Disponible</div>
+                  <div class="status-pill" data-status="ausente">⚪ Ausente</div>
+                </div>
               </div>
             </div>
-            <div class="account-identity">
-              <div class="account-name" id="account-name-display">Julia Méndez</div>
-              <div class="account-email-display" id="account-email-display">julia@chatg2i.uy</div>
+
+            <div class="account-card">
+              <div class="section-title">Datos personales</div>
+              <div class="form-group"><label>Nombre</label><input id="account-name-input"></div>
+              <div class="form-group"><label>Email</label><input id="account-email-input" type="email"></div>
+              <button class="btn btn-accent btn-sm" id="save-account-info">Guardar datos</button>
             </div>
-            <div class="status-toggle" id="status-toggle">
-              <div class="status-pill" data-status="disponible">🟢 Disponible</div>
-              <div class="status-pill" data-status="ausente">⚪ Ausente</div>
+
+            <div class="account-card">
+              <div class="section-title">Sesión</div>
+              <button class="btn btn-ghost btn-sm" id="logout-btn" style="color:var(--destructive)">Cerrar sesión</button>
             </div>
           </div>
-        </div>
 
-        <div class="account-card">
-          <div class="section-title">Datos personales</div>
-          <div class="form-group"><label>Nombre</label><input id="account-name-input"></div>
-          <div class="form-group"><label>Email</label><input id="account-email-input" type="email"></div>
-          <button class="btn btn-accent btn-sm" id="save-account-info">Guardar datos</button>
-        </div>
+          <div class="col-right">
+            <div class="account-card">
+              <div class="section-title">Cambiar contraseña</div>
+              <div class="form-group"><label>Contraseña actual</label><input type="password" id="account-current-pw" placeholder="••••••••"></div>
+              <div class="form-group"><label>Nueva contraseña</label><input type="password" id="account-new-pw" placeholder="Mínimo 6 caracteres"></div>
+              <div class="form-group"><label>Confirmar nueva contraseña</label><input type="password" id="account-confirm-pw"></div>
+              <button class="btn btn-accent btn-sm" id="save-account-password">Actualizar contraseña</button>
+            </div>
 
-        <div class="account-card">
-          <div class="section-title">Cambiar contraseña</div>
-          <div class="form-group"><label>Contraseña actual</label><input type="password" id="account-current-pw" placeholder="••••••••"></div>
-          <div class="form-group"><label>Nueva contraseña</label><input type="password" id="account-new-pw" placeholder="Mínimo 6 caracteres"></div>
-          <div class="form-group"><label>Confirmar nueva contraseña</label><input type="password" id="account-confirm-pw"></div>
-          <button class="btn btn-accent btn-sm" id="save-account-password">Actualizar contraseña</button>
-        </div>
+            <div class="account-card">
+              <div class="section-title">Notificaciones</div>
+              <div class="notif-row"><span>Nuevo mensaje asignado a mí</span><label class="switch"><input type="checkbox" id="notif-assigned"><span class="switch-slider"></span></label></div>
+              <div class="notif-row"><span>Mención en una nota</span><label class="switch"><input type="checkbox" id="notif-mention"><span class="switch-slider"></span></label></div>
+              <div class="notif-row"><span>Resumen diario por email</span><label class="switch"><input type="checkbox" id="notif-digest"><span class="switch-slider"></span></label></div>
+              <div class="notif-row"><span>Sonido al recibir un mensaje</span><label class="switch"><input type="checkbox" id="notif-sound"><span class="switch-slider"></span></label></div>
+            </div>
+          </div>
 
-        <div class="account-card">
-          <div class="section-title">Notificaciones</div>
-          <div class="notif-row"><span>Nuevo mensaje asignado a mí</span><label class="switch"><input type="checkbox" id="notif-assigned"><span class="switch-slider"></span></label></div>
-          <div class="notif-row"><span>Mención en una nota</span><label class="switch"><input type="checkbox" id="notif-mention"><span class="switch-slider"></span></label></div>
-          <div class="notif-row"><span>Resumen diario por email</span><label class="switch"><input type="checkbox" id="notif-digest"><span class="switch-slider"></span></label></div>
-          <div class="notif-row"><span>Sonido al recibir un mensaje</span><label class="switch"><input type="checkbox" id="notif-sound"><span class="switch-slider"></span></label></div>
         </div>
+      </div>
+    </div>
 
-        <div class="account-card">
-          <div class="section-title">Sesión</div>
-          <button class="btn btn-ghost btn-sm" id="logout-btn" style="color:var(--destructive)">Cerrar sesión</button>
+    <!-- ============ PLAN Y FACTURACIÓN ============ -->
+    <div class="view" id="view-billing">
+      <div class="topbar">
+        <div><h1>Plan y facturación</h1><div class="sub">Tu suscripción, uso del mes y método de pago</div></div>
+      </div>
+      <div style="padding: var(--space-6);">
+        <div class="two-col-layout">
+
+          <div class="col-left">
+            <div class="account-card">
+              <div class="plan-summary">
+                <div>
+                  <div class="plan-name" id="billing-plan-name">—</div>
+                  <div class="plan-price" id="billing-plan-price">—</div>
+                  <ul class="plan-features" id="billing-plan-features"></ul>
+                </div>
+                <button class="btn btn-accent btn-sm" id="btn-change-plan">Cambiar de plan</button>
+              </div>
+            </div>
+
+            <div class="account-card">
+              <div class="section-title">Uso de este mes</div>
+              <div class="usage-row">
+                <div class="usage-label"><span>Mensajes enviados</span><span class="u-count" id="usage-messages-label"></span></div>
+                <div class="usage-bar-track"><div class="usage-bar-fill" id="usage-messages-fill"></div></div>
+              </div>
+              <div class="usage-row">
+                <div class="usage-label"><span>Miembros del equipo</span><span class="u-count" id="usage-seats-label"></span></div>
+                <div class="usage-bar-track"><div class="usage-bar-fill" id="usage-seats-fill"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-right">
+            <div class="account-card">
+              <div class="section-title">Método de pago</div>
+              <div class="payment-method-row">
+                <div class="payment-method-detail">
+                  <span class="card-brand-chip" id="payment-brand-chip"></span>
+                  <span id="payment-detail-text"></span>
+                </div>
+                <button class="btn btn-ghost btn-sm" id="btn-change-payment">Cambiar método</button>
+              </div>
+            </div>
+
+            <div class="account-card">
+              <div class="section-title">Historial de facturación</div>
+              <table class="data">
+                <thead><tr><th>Fecha</th><th>Concepto</th><th>Monto</th><th>Estado</th><th></th></tr></thead>
+                <tbody id="invoices-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
+      </div>
+    </div>
 
+    <!-- ============ AYUDA Y SOPORTE ============ -->
+    <div class="view" id="view-help">
+      <div class="topbar">
+        <div><h1>Ayuda y soporte</h1><div class="sub">Preguntas frecuentes y contacto directo con nuestro equipo</div></div>
+      </div>
+      <div style="padding: var(--space-6);">
+        <div class="two-col-layout">
+
+          <div class="help-col-left">
+            <div class="contact-methods">
+              <div class="contact-method-card">
+                <div class="cm-icon">💬</div>
+                <div class="cm-title">Chat en vivo</div>
+                <div class="cm-detail">Lun a vie, 9 a 18hs</div>
+              </div>
+              <div class="contact-method-card">
+                <div class="cm-icon">✉️</div>
+                <div class="cm-title">soporte@chatg2i.uy</div>
+                <div class="cm-detail">Respuesta en menos de 24hs</div>
+              </div>
+              <div class="contact-method-card">
+                <div class="cm-icon">📞</div>
+                <div class="cm-title">+598 2900 0000</div>
+                <div class="cm-detail">Solo planes Profesional y superiores</div>
+              </div>
+            </div>
+
+            <div class="account-card">
+              <div class="section-title">Escribinos directamente</div>
+              <div class="form-group"><label>Asunto</label><input id="support-subject-input" placeholder="ej: No me llegan los mensajes de WhatsApp"></div>
+              <div class="form-group"><label>Mensaje</label><textarea id="support-message-input" placeholder="Contanos qué necesitás..."></textarea></div>
+              <button class="btn btn-accent btn-sm" id="submit-support-ticket">Enviar consulta</button>
+
+              <div id="support-tickets-list" style="margin-top: var(--space-4);"></div>
+            </div>
+          </div>
+
+          <div class="help-col-right">
+            <div class="account-card">
+              <div class="section-title">Preguntas frecuentes</div>
+              <input class="search-box help-search" id="faq-search" placeholder="Buscar en las preguntas frecuentes...">
+              <div id="faq-accordion" class="faq-list"></div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
 
@@ -1518,11 +1706,45 @@ let state = {
     status: 'disponible',
     notifications: { assigned: true, mention: true, digest: false, sound: true }
   },
+  billing: {
+    planId: 'pro',
+    renewalDate: '2026-10-01',
+    messagesUsed: 1842,
+    paymentMethod: { brand: 'Visa', last4: '4242', expiry: '08/28' },
+    invoices: [
+      { id: 'INV-2026-08', date: '2026-08-01', concept: 'Plan Profesional — agosto 2026', amount: 4990, status: 'pagada' },
+      { id: 'INV-2026-07', date: '2026-07-01', concept: 'Plan Profesional — julio 2026', amount: 4990, status: 'pagada' },
+      { id: 'INV-2026-06', date: '2026-06-01', concept: 'Plan Profesional — junio 2026', amount: 4990, status: 'pagada' }
+    ]
+  },
+  plans: [
+    { id: 'starter', name: 'Starter', price: 1990, seatsIncluded: 2, messagesIncluded: 800, features: ['1 canal conectado', 'Bots básicos', 'Soporte por email'] },
+    { id: 'pro', name: 'Profesional', price: 4990, seatsIncluded: 5, messagesIncluded: 3000, features: ['Canales ilimitados', 'Bots y flujos avanzados', 'Reportes exportables', 'Soporte prioritario'] },
+    { id: 'business', name: 'Business', price: 9990, seatsIncluded: 15, messagesIncluded: 10000, features: ['Todo lo de Profesional', 'Permisos por rol', 'Soporte telefónico dedicado'] }
+  ],
+  faqs: [
+    { q: '¿Cómo conecto mi WhatsApp Business?', a: 'Andá a Configuración → Canales & Bots, hacé clic en "Conectar" sobre WhatsApp Business API y seguí los pasos de vinculación con Meta.' },
+    { q: '¿Puedo cambiar de plan en cualquier momento?', a: 'Sí, desde Plan y facturación → "Cambiar de plan". El cambio se aplica al inicio del siguiente ciclo de facturación.' },
+    { q: '¿Cómo agrego un miembro nuevo al equipo?', a: 'En Configuración → Equipo, hacé clic en "+ Agregar miembro" e ingresá su nombre, email y rol.' },
+    { q: '¿Qué pasa si supero el límite de mensajes de mi plan?', a: 'Te avisamos por email al llegar al 90% de uso. Podés seguir enviando mensajes, pero se cobra un excedente por mensaje o podés subir de plan.' },
+    { q: '¿Los bots pueden atender fuera de horario?', a: 'Sí, configurá el horario de atención en Configuración → Grupos y Horarios y activá el bot en el canal correspondiente.' },
+    { q: '¿Cómo exporto mis reportes?', a: 'En Reportes, cada pestaña (vendedor, etapa, etiqueta) tiene un botón "Exportar CSV" que descarga los datos filtrados.' }
+  ],
+  supportTickets: [],
+  nextTicketId: 1,
   templates: [
     { id: 1, name: 'bienvenida_nuevo_cliente', category: 'Utilidad', status: 'approved', text: 'Hola {{1}}, gracias por escribirnos 👋 Somos ChatG2I y estamos para ayudarte con tu pedido.', usageCount: 214 },
     { id: 2, name: 'confirmacion_pedido', category: 'Actualización de pedido', status: 'approved', text: 'Tu pedido #{{1}} fue confirmado ✅ Total: {{2}}. Te avisamos cuando salga a reparto.', usageCount: 96 },
     { id: 3, name: 'recordatorio_pago', category: 'Marketing', status: 'pending', text: 'Hola {{1}}, tu pedido queda reservado 24hs. ¿Confirmamos el pago para asegurarlo?', usageCount: 12 }
   ], // se completan más abajo con generateSampleTemplates() para simular una cuenta real con muchas plantillas
+  products: [
+    { id: 1, name: 'Vestido floreado', price: 1150, stock: 12, image: '', icon: '👗', bg: 'var(--gradient-primary)' },
+    { id: 2, name: 'Cartera de cuero', price: 1200, stock: 5, image: '', icon: '👜', bg: 'var(--gradient-accent)' },
+    { id: 3, name: 'Zapatillas urbanas', price: 1150, stock: 20, image: '', icon: '👟', bg: 'var(--gradient-secondary)' },
+    { id: 4, name: 'Traje a medida', price: 5600, stock: 2, image: '', icon: '🤵', bg: 'var(--primary-light)' },
+    { id: 5, name: 'Campera de jean', price: 1400, stock: 0, image: '', icon: '🧥', bg: 'var(--accent-light)' }
+  ],
+  nextProductId: 6,
   orders: [
     { id: 1042, contactId: 1, channel: 'wa', total: 2400, status: 'pendiente', product: 'Vestido floreado M', date: '2026-09-10', seller: 'Julia Méndez' },
     { id: 988, contactId: 1, channel: 'wa', total: 1150, status: 'entregado', product: 'Vestido floreado M', date: '2026-09-04', seller: 'Julia Méndez' },
@@ -1841,6 +2063,9 @@ function switchToView(viewName) {
   if (viewName === 'reports' && typeof renderReports === 'function') renderReports();
   if (viewName === 'calendar' && typeof renderCalendar === 'function') renderCalendar();
   if (viewName === 'tasks' && typeof refreshTaskViews === 'function') refreshTaskViews();
+  if (viewName === 'products' && typeof renderProductGrid === 'function') renderProductGrid();
+  if (viewName === 'billing' && typeof renderBilling === 'function') renderBilling();
+  if (viewName === 'help' && typeof renderFaqs === 'function') { renderFaqs(); renderSupportTickets(); }
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -3526,6 +3751,270 @@ function formatDateDMY(iso) {
   return `${d}/${m}/${y}`;
 }
 
+/* ============================================================
+   CATÁLOGO DE PRODUCTOS
+   ============================================================ */
+let productSearchQuery = '';
+
+function productThumbHtml(p) {
+  return p.image
+    ? `background-image:url('${p.image.replace(/'/g, "\\'")}')`
+    : `background:${p.bg || 'var(--gradient-primary)'}`;
+}
+
+function renderProductGrid() {
+  const grid = document.getElementById('product-grid');
+  const q = productSearchQuery.trim().toLowerCase();
+  const rows = state.products.filter(p => !q || p.name.toLowerCase().includes(q));
+  document.getElementById('product-results-count').textContent = `${rows.length} de ${state.products.length} productos`;
+
+  grid.innerHTML = rows.map(p => {
+    const stockClass = p.stock <= 0 ? 'out' : p.stock <= 3 ? 'low' : '';
+    const stockLabel = p.stock <= 0 ? 'Sin stock' : `Stock: ${p.stock}`;
+    return `
+      <div class="product-card" data-product-id="${p.id}">
+        <div class="product-card-image" style="${productThumbHtml(p)}">${p.image ? '' : p.icon}</div>
+        <div class="product-card-body">
+          <div class="product-card-top">
+            <div class="product-card-name">${escapeHtml(p.name)}</div>
+            <div class="product-card-actions">
+              <button class="row-icon-btn" data-edit-product="${p.id}" title="Editar">✎</button>
+              <button class="row-icon-btn" data-delete-product="${p.id}" title="Eliminar">✕</button>
+            </div>
+          </div>
+          <div class="product-card-price">${fmtMoney(p.price)}</div>
+          <div class="product-card-stock ${stockClass}">${stockLabel}</div>
+        </div>
+      </div>`;
+  }).join('') || '<div class="empty-state">No hay productos que coincidan con la búsqueda</div>';
+
+  grid.querySelectorAll('[data-edit-product]').forEach(btn => {
+    btn.addEventListener('click', () => openProductModal(state.products.find(p => p.id === Number(btn.dataset.editProduct))));
+  });
+  grid.querySelectorAll('[data-delete-product]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = state.products.find(x => x.id === Number(btn.dataset.deleteProduct));
+      openConfirmModal('Eliminar producto', `¿Eliminar "${escapeHtml(p.name)}" del catálogo?`, () => {
+        state.products = state.products.filter(x => x.id !== p.id);
+        renderProductGrid();
+        showToast('Producto eliminado');
+      });
+    });
+  });
+}
+
+const PRODUCT_ICON_CYCLE = ['📦', '👕', '👗', '👟', '👜', '🧥', '🎒', '💍'];
+const PRODUCT_BG_CYCLE = ['var(--gradient-primary)', 'var(--gradient-accent)', 'var(--gradient-secondary)', 'var(--primary-light)', 'var(--accent-light)'];
+
+/* ===== importar catálogo desde CSV (ej: exportado de Excel) ===== */
+function parseCSVText(text) {
+  text = text.replace(/^﻿/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const firstLine = text.split('\n', 1)[0];
+  const delimiter = (firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length ? ';' : ',';
+
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') { field += '"'; i++; }
+        else inQuotes = false;
+      } else field += ch;
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === delimiter) {
+      row.push(field); field = '';
+    } else if (ch === '\n') {
+      row.push(field); rows.push(row); row = []; field = '';
+    } else {
+      field += ch;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(c => c.trim() !== ''));
+}
+
+function parsePriceValue(raw) {
+  let s = String(raw || '').trim().replace(/[^\d.,-]/g, '');
+  if (!s) return NaN;
+  const lastComma = s.lastIndexOf(',');
+  const lastDot = s.lastIndexOf('.');
+  if (lastComma > -1 && lastDot > -1) {
+    s = lastComma > lastDot ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+  } else if (lastComma > -1) {
+    const parts = s.split(',');
+    s = (parts.length === 2 && parts[1].length <= 2) ? parts.join('.') : s.replace(/,/g, '');
+  } else if ((s.match(/\./g) || []).length > 1) {
+    s = s.replace(/\./g, '');
+  }
+  const n = parseFloat(s);
+  return Number.isNaN(n) ? NaN : n;
+}
+
+const CSV_HEADER_MAP = {
+  name: ['nombre', 'name', 'producto'],
+  price: ['precio', 'price'],
+  stock: ['stock', 'cantidad', 'existencias'],
+  image: ['imagen', 'image', 'foto', 'url']
+};
+
+function mapCSVHeaders(headerRow) {
+  const normalized = headerRow.map(h => h.trim().toLowerCase());
+  const idx = {};
+  Object.keys(CSV_HEADER_MAP).forEach(field => {
+    idx[field] = normalized.findIndex(h => CSV_HEADER_MAP[field].includes(h));
+  });
+  return idx;
+}
+
+function parseCatalogCSV(text) {
+  const rows = parseCSVText(text);
+  if (!rows.length) return { results: [], headerError: 'El archivo está vacío.' };
+  const idx = mapCSVHeaders(rows[0]);
+  if (idx.name === -1) return { results: [], headerError: 'No encontré una columna de nombre (ej: "nombre" o "name") en la primera fila.' };
+
+  const results = rows.slice(1).map((r, i) => {
+    const name = (r[idx.name] || '').trim();
+    const price = idx.price > -1 ? parsePriceValue(r[idx.price]) : NaN;
+    const stock = idx.stock > -1 ? parseInt(String(r[idx.stock] || '').replace(/[^\d-]/g, ''), 10) : 0;
+    const image = idx.image > -1 ? (r[idx.image] || '').trim() : '';
+    let error = null;
+    if (!name) error = 'Falta el nombre';
+    else if (idx.price > -1 && Number.isNaN(price)) error = 'Precio inválido';
+    const existing = name ? state.products.find(p => p.name.toLowerCase() === name.toLowerCase()) : null;
+    return { line: i + 2, name, price: Number.isNaN(price) ? 0 : price, stock: Number.isNaN(stock) ? 0 : stock, image, error, action: error ? 'error' : existing ? 'update' : 'create' };
+  });
+  return { results, headerError: null };
+}
+
+function openImportPreviewModal(results) {
+  const toCreate = results.filter(r => r.action === 'create').length;
+  const toUpdate = results.filter(r => r.action === 'update').length;
+  const errors = results.filter(r => r.action === 'error');
+
+  openModal(`
+    <div class="modal-top"><h2>Importar catálogo</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <p style="font-size:.85rem; color:var(--foreground-secondary); margin-bottom:var(--space-4)">
+      Se van a <strong>crear ${toCreate}</strong> y <strong>actualizar ${toUpdate}</strong> productos.${errors.length ? ` ${errors.length} fila(s) con error se van a omitir.` : ''}
+    </p>
+    <div style="max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius)">
+      <table class="data" style="margin:0">
+        <thead><tr><th>Fila</th><th>Nombre</th><th>Precio</th><th>Stock</th><th>Estado</th></tr></thead>
+        <tbody>
+          ${results.map(r => `
+            <tr>
+              <td>${r.line}</td>
+              <td>${escapeHtml(r.name || '—')}</td>
+              <td>${r.action === 'error' ? '—' : fmtMoney(r.price)}</td>
+              <td>${r.action === 'error' ? '—' : r.stock}</td>
+              <td>${r.action === 'error' ? `<span style="color:var(--destructive)">${escapeHtml(r.error)}</span>` : r.action === 'update' ? '🔄 Actualiza' : '🆕 Nuevo'}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-accent" id="confirm-import-btn" ${(toCreate + toUpdate) === 0 ? 'disabled' : ''}>Confirmar importación</button>
+    </div>
+  `, 'modal-wide');
+
+  const confirmBtn = document.getElementById('confirm-import-btn');
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', () => {
+      let created = 0, updated = 0;
+      results.forEach(r => {
+        if (r.action === 'error') return;
+        if (r.action === 'update') {
+          const existing = state.products.find(p => p.name.toLowerCase() === r.name.toLowerCase());
+          Object.assign(existing, { price: r.price, stock: r.stock, image: r.image || existing.image });
+          updated++;
+        } else {
+          const idx = state.products.length;
+          state.products.push({ id: state.nextProductId++, name: r.name, price: r.price, stock: r.stock, image: r.image, icon: PRODUCT_ICON_CYCLE[idx % PRODUCT_ICON_CYCLE.length], bg: PRODUCT_BG_CYCLE[idx % PRODUCT_BG_CYCLE.length] });
+          created++;
+        }
+      });
+      closeModal();
+      renderProductGrid();
+      showToast(`Importación lista: ${created} creados, ${updated} actualizados`);
+    });
+  }
+}
+
+document.getElementById('btn-import-products').addEventListener('click', () => {
+  document.getElementById('product-import-input').click();
+});
+document.getElementById('product-import-input').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const { results, headerError } = parseCatalogCSV(String(reader.result));
+    if (headerError) { showToast(headerError); }
+    else if (!results.length) { showToast('No encontré filas para importar'); }
+    else openImportPreviewModal(results);
+    e.target.value = '';
+  };
+  reader.onerror = () => showToast('No se pudo leer el archivo');
+  reader.readAsText(file);
+});
+
+function openProductModal(product) {
+  const isEdit = !!product;
+  openModal(`
+    <div class="modal-top"><h2>${isEdit ? 'Editar producto' : 'Nuevo producto'}</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="form-group"><label>Nombre</label><input id="product-name-input" value="${product ? escapeHtml(product.name) : ''}" placeholder="ej: Vestido floreado"></div>
+    <div class="modal-two-col">
+      <div class="form-group"><label>Precio ($)</label><input id="product-price-input" type="number" min="0" value="${product ? product.price : ''}" placeholder="ej: 1500"></div>
+      <div class="form-group"><label>Stock</label><input id="product-stock-input" type="number" min="0" value="${product ? product.stock : ''}" placeholder="ej: 10"></div>
+    </div>
+    <div class="form-group">
+      <label>Imagen (URL, opcional)</label>
+      <input id="product-image-input" value="${product ? escapeHtml(product.image || '') : ''}" placeholder="https://...">
+      <div class="product-image-preview" id="product-image-preview" style="${product ? productThumbHtml(product) : `background:${PRODUCT_BG_CYCLE[state.products.length % PRODUCT_BG_CYCLE.length]}`}">${product && product.image ? '' : (product ? product.icon : PRODUCT_ICON_CYCLE[state.products.length % PRODUCT_ICON_CYCLE.length])}</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-accent" id="save-product">${isEdit ? 'Guardar' : 'Crear producto'}</button>
+    </div>
+  `);
+
+  document.getElementById('product-image-input').addEventListener('input', (e) => {
+    const preview = document.getElementById('product-image-preview');
+    const url = e.target.value.trim();
+    if (url) { preview.style.background = `url('${url.replace(/'/g, "\\'")}')`; preview.style.backgroundSize = 'cover'; preview.style.backgroundPosition = 'center'; preview.textContent = ''; }
+    else { preview.style.background = product ? product.bg : PRODUCT_BG_CYCLE[state.products.length % PRODUCT_BG_CYCLE.length]; preview.textContent = product ? product.icon : PRODUCT_ICON_CYCLE[state.products.length % PRODUCT_ICON_CYCLE.length]; }
+  });
+
+  document.getElementById('save-product').addEventListener('click', () => {
+    const name = document.getElementById('product-name-input').value.trim();
+    const price = Number(document.getElementById('product-price-input').value);
+    const stock = Number(document.getElementById('product-stock-input').value);
+    const image = document.getElementById('product-image-input').value.trim();
+    if (!name) { showToast('Ingresá un nombre'); return; }
+    if (!price || price <= 0) { showToast('Ingresá un precio válido'); return; }
+    if (stock === '' || stock < 0 || Number.isNaN(stock)) { showToast('Ingresá un stock válido'); return; }
+
+    if (isEdit) {
+      Object.assign(product, { name, price, stock, image });
+      showToast('Producto actualizado');
+    } else {
+      const idx = state.products.length;
+      state.products.push({ id: state.nextProductId++, name, price, stock, image, icon: PRODUCT_ICON_CYCLE[idx % PRODUCT_ICON_CYCLE.length], bg: PRODUCT_BG_CYCLE[idx % PRODUCT_BG_CYCLE.length] });
+      showToast('Producto creado');
+    }
+    closeModal();
+    renderProductGrid();
+  });
+}
+
+document.getElementById('btn-new-product').addEventListener('click', () => openProductModal(null));
+document.getElementById('product-search').addEventListener('input', (e) => {
+  productSearchQuery = e.target.value;
+  renderProductGrid();
+});
+
 function renderOrdersTable() {
   const tbody = document.getElementById('orders-tbody');
   const f = state.orderFilters;
@@ -3609,21 +4098,54 @@ document.getElementById('order-filter-clear').addEventListener('click', () => {
 });
 
 document.getElementById('btn-new-order').addEventListener('click', () => {
-  const options = state.contacts.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  const contactOptions = state.contacts.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  const productOptions = state.products.map(p => `<option value="${p.id}">${escapeHtml(p.name)} — ${fmtMoney(p.price)}</option>`).join('');
   openModal(`
     <div class="modal-top"><h2>Nuevo pedido</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
-    <div class="form-group"><label>Contacto</label><select id="order-contact">${options}</select></div>
-    <div class="form-group"><label>Producto</label><input id="order-product" placeholder="ej: Vestido floreado M"></div>
+    <div class="form-group"><label>Contacto</label><select id="order-contact">${contactOptions}</select></div>
+    <div class="form-group">
+      <label>Producto</label>
+      <select id="order-product-select">
+        ${productOptions}
+        <option value="__custom__">Otro (especificar)</option>
+      </select>
+    </div>
+    <div class="form-group" id="order-product-custom-wrap" style="display:none">
+      <label>Nombre del producto</label><input id="order-product-custom" placeholder="ej: Vestido floreado M">
+    </div>
     <div class="form-group"><label>Total ($)</label><input id="order-total" type="number" min="0" placeholder="ej: 1500"></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-accent" id="save-order">Crear pedido</button>
     </div>
   `);
+
+  const productSelect = document.getElementById('order-product-select');
+  const customWrap = document.getElementById('order-product-custom-wrap');
+  const totalInput = document.getElementById('order-total');
+
+  function syncProductSelection() {
+    if (productSelect.value === '__custom__') {
+      customWrap.style.display = 'block';
+    } else {
+      customWrap.style.display = 'none';
+      const p = state.products.find(x => x.id === Number(productSelect.value));
+      if (p) totalInput.value = p.price;
+    }
+  }
+  productSelect.addEventListener('change', syncProductSelection);
+  syncProductSelection();
+
   document.getElementById('save-order').addEventListener('click', () => {
     const contactId = Number(document.getElementById('order-contact').value);
-    const product = document.getElementById('order-product').value.trim();
-    const total = Number(document.getElementById('order-total').value);
+    let product;
+    if (productSelect.value === '__custom__') {
+      product = document.getElementById('order-product-custom').value.trim();
+    } else {
+      const p = state.products.find(x => x.id === Number(productSelect.value));
+      product = p ? p.name : '';
+    }
+    const total = Number(totalInput.value);
     if (!total || total <= 0) { showToast('Ingresá un total válido'); return; }
     const contact = contactById(contactId);
     const todayISO = new Date().toISOString().slice(0, 10);
@@ -5095,6 +5617,181 @@ function renderSidebarFooter() {
   document.getElementById('footer-plan').textContent = acc.status === 'disponible' ? '🟢 Disponible' : '⚪ Ausente';
 }
 
+/* ============================================================
+   PLAN Y FACTURACIÓN
+   ============================================================ */
+function currentPlan() { return state.plans.find(p => p.id === state.billing.planId); }
+const INVOICE_STATUS_LABEL = { pagada: 'Pagada', pendiente: 'Pendiente' };
+
+function renderBilling() {
+  const plan = currentPlan();
+  const b = state.billing;
+
+  document.getElementById('billing-plan-name').textContent = plan.name;
+  document.getElementById('billing-plan-price').textContent = `${fmtMoney(plan.price)} / mes · se renueva el ${formatDateDMY(b.renewalDate)}`;
+  document.getElementById('billing-plan-features').innerHTML = plan.features.map(f => `<li>✓ ${escapeHtml(f)}</li>`).join('');
+
+  const msgPct = Math.min(100, Math.round((b.messagesUsed / plan.messagesIncluded) * 100));
+  document.getElementById('usage-messages-label').textContent = `${b.messagesUsed.toLocaleString('es-UY')} / ${plan.messagesIncluded.toLocaleString('es-UY')}`;
+  const msgFill = document.getElementById('usage-messages-fill');
+  msgFill.style.width = msgPct + '%';
+  msgFill.classList.toggle('high', msgPct >= 90);
+
+  const seatsUsed = state.team.length;
+  const seatsPct = Math.min(100, Math.round((seatsUsed / plan.seatsIncluded) * 100));
+  document.getElementById('usage-seats-label').textContent = `${seatsUsed} / ${plan.seatsIncluded}`;
+  const seatsFill = document.getElementById('usage-seats-fill');
+  seatsFill.style.width = seatsPct + '%';
+  seatsFill.classList.toggle('high', seatsPct >= 90);
+
+  document.getElementById('payment-brand-chip').textContent = b.paymentMethod.brand;
+  document.getElementById('payment-detail-text').textContent = `terminada en ${b.paymentMethod.last4} · vence ${b.paymentMethod.expiry}`;
+
+  document.getElementById('invoices-tbody').innerHTML = b.invoices.map(inv => `
+    <tr>
+      <td>${formatDateDMY(inv.date)}</td>
+      <td>${escapeHtml(inv.concept)}</td>
+      <td>${fmtMoney(inv.amount)}</td>
+      <td><span class="tpl-status ${inv.status === 'pagada' ? 'status-approved' : 'status-pending'}">● ${INVOICE_STATUS_LABEL[inv.status] || inv.status}</span></td>
+      <td><button class="row-icon-btn" data-view-invoice="${inv.id}" title="Ver">👁</button></td>
+    </tr>`).join('') || `<tr><td colspan="5"><div class="empty-state">Sin facturas todavía</div></td></tr>`;
+
+  document.querySelectorAll('[data-view-invoice]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const inv = b.invoices.find(x => x.id === btn.dataset.viewInvoice);
+      openModal(`
+        <div class="modal-top"><h2>${escapeHtml(inv.id)}</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+        <p style="font-size:.84rem; color:var(--foreground-secondary); line-height:1.6;">
+          <strong>Concepto:</strong> ${escapeHtml(inv.concept)}<br>
+          <strong>Fecha:</strong> ${formatDateDMY(inv.date)}<br>
+          <strong>Monto:</strong> ${fmtMoney(inv.amount)}<br>
+          <strong>Estado:</strong> ${INVOICE_STATUS_LABEL[inv.status] || inv.status}
+        </p>
+        <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cerrar</button></div>
+      `);
+    });
+  });
+}
+
+document.getElementById('btn-change-plan').addEventListener('click', () => {
+  const current = currentPlan();
+  openModal(`
+    <div class="modal-top"><h2>Cambiar de plan</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="audience-cards" id="plan-picker-cards">
+      ${state.plans.map(p => `
+        <div class="audience-card ${p.id === current.id ? 'selected' : ''}" data-plan-id="${p.id}">
+          <div>
+            <div class="plan-picker-title">${escapeHtml(p.name)}${p.id === current.id ? ' (actual)' : ''}</div>
+            <div class="plan-picker-price">${fmtMoney(p.price)} / mes · ${p.seatsIncluded} miembros · ${p.messagesIncluded.toLocaleString('es-UY')} mensajes</div>
+            <div class="plan-picker-features">${p.features.join(' · ')}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-accent" id="confirm-plan-change">Confirmar cambio</button>
+    </div>
+  `, 'modal-wide');
+
+  let selectedPlanId = current.id;
+  const cardsWrap = document.getElementById('plan-picker-cards');
+  cardsWrap.addEventListener('click', (e) => {
+    const card = e.target.closest('.audience-card');
+    if (!card) return;
+    cardsWrap.querySelectorAll('.audience-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedPlanId = card.dataset.planId;
+  });
+
+  document.getElementById('confirm-plan-change').addEventListener('click', () => {
+    state.billing.planId = selectedPlanId;
+    closeModal();
+    renderBilling();
+    showToast(`Ahora estás en el plan ${state.plans.find(p => p.id === selectedPlanId).name}`);
+  });
+});
+
+document.getElementById('btn-change-payment').addEventListener('click', () => {
+  openModal(`
+    <div class="modal-top"><h2>Cambiar método de pago</h2><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="form-group"><label>Número de tarjeta</label><input id="pm-card-number" placeholder="4242 4242 4242 4242" maxlength="19"></div>
+    <div class="modal-two-col">
+      <div class="form-group"><label>Vencimiento</label><input id="pm-card-expiry" placeholder="MM/AA" maxlength="5"></div>
+      <div class="form-group"><label>CVV</label><input id="pm-card-cvv" placeholder="123" maxlength="4"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-accent" id="save-payment-method">Guardar</button>
+    </div>
+  `);
+  document.getElementById('save-payment-method').addEventListener('click', () => {
+    const number = document.getElementById('pm-card-number').value.replace(/\D/g, '');
+    const expiry = document.getElementById('pm-card-expiry').value.trim();
+    if (number.length < 12) { showToast('Ingresá un número de tarjeta válido'); return; }
+    if (!/^\d{2}\/\d{2}$/.test(expiry)) { showToast('Ingresá el vencimiento como MM/AA'); return; }
+    state.billing.paymentMethod = { brand: 'Visa', last4: number.slice(-4), expiry };
+    closeModal();
+    renderBilling();
+    showToast('Método de pago actualizado');
+  });
+});
+
+/* ============================================================
+   AYUDA Y SOPORTE
+   ============================================================ */
+let faqSearchQuery = '';
+
+function renderFaqs() {
+  const wrap = document.getElementById('faq-accordion');
+  const q = faqSearchQuery.trim().toLowerCase();
+  const rows = state.faqs.filter(f => !q || f.q.toLowerCase().includes(q) || f.a.toLowerCase().includes(q));
+  wrap.innerHTML = rows.length
+    ? rows.map((f, i) => accordionSectionGeneric('faq' + i, f.q, `<div class="accordion-row" style="border:none">${escapeHtml(f.a)}</div>`)).join('')
+    : '<div class="accordion-empty">No encontramos preguntas que coincidan con tu búsqueda</div>';
+
+  wrap.querySelectorAll('.accordion-header').forEach(h => {
+    h.addEventListener('click', () => h.closest('.accordion-item').classList.toggle('open'));
+  });
+}
+
+function accordionSectionGeneric(key, title, bodyHtml) {
+  return `
+    <div class="accordion-item" data-accordion="${key}">
+      <div class="accordion-header"><span>${escapeHtml(title)}</span><span class="chev">›</span></div>
+      <div class="accordion-body">${bodyHtml}</div>
+    </div>`;
+}
+
+document.getElementById('faq-search').addEventListener('input', (e) => {
+  faqSearchQuery = e.target.value;
+  renderFaqs();
+});
+
+function renderSupportTickets() {
+  const wrap = document.getElementById('support-tickets-list');
+  if (!state.supportTickets.length) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<div class="section-title" style="margin-bottom:var(--space-2); font-size:.8rem;">Tus consultas recientes</div>` +
+    state.supportTickets.slice().reverse().map(t => `
+      <div class="ticket-row">
+        <div>
+          <div class="ticket-subject">${escapeHtml(t.subject)}</div>
+          <div class="ticket-meta">${t.date}</div>
+        </div>
+        <span class="tpl-status status-pending">● Enviada</span>
+      </div>`).join('');
+}
+
+document.getElementById('submit-support-ticket').addEventListener('click', () => {
+  const subject = document.getElementById('support-subject-input').value.trim();
+  const message = document.getElementById('support-message-input').value.trim();
+  if (!subject || !message) { showToast('Completá el asunto y el mensaje'); return; }
+  state.supportTickets.push({ id: state.nextTicketId++, subject, message, date: formatDateDMY(todayISO()) });
+  document.getElementById('support-subject-input').value = '';
+  document.getElementById('support-message-input').value = '';
+  renderSupportTickets();
+  showToast('Consulta enviada, te respondemos a la brevedad');
+});
+
 function renderMyAccount() {
   const acc = state.myAccount;
   const initials = acc.name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
@@ -5185,6 +5882,7 @@ function initAll() {
   renderContactsTable();
   renderFlow();
   renderTemplates();
+  renderProductGrid();
   renderOrdersTable();
   renderChannels();
   renderTeam();
