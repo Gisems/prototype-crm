@@ -1414,6 +1414,11 @@ table.data tbody tr:hover { background: var(--background-primary-subtle); }
           <div class="notif-row"><span>Sonido al recibir un mensaje</span><label class="switch"><input type="checkbox" id="notif-sound"><span class="switch-slider"></span></label></div>
         </div>
 
+        <div class="account-card">
+          <div class="section-title">Sesión</div>
+          <button class="btn btn-ghost btn-sm" id="logout-btn" style="color:var(--destructive)">Cerrar sesión</button>
+        </div>
+
       </div>
     </div>
 
@@ -5236,6 +5241,21 @@ function completeLogin() {
     document.getElementById('login-screen').style.display = 'none';
     showOnboardingModal();
   }, 350);
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+  openConfirmModal('Cerrar sesión', '¿Seguro que querés cerrar sesión?', logout, 'Cerrar sesión');
+});
+
+function logout() {
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-error').style.display = 'none';
+  const screen = document.getElementById('login-screen');
+  screen.style.display = 'flex';
+  void screen.offsetWidth;
+  screen.classList.remove('logged-in');
+  switchToView('dashboard');
 }
 
 function showOnboardingModal() {
