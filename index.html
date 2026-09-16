@@ -740,6 +740,16 @@ table.data tbody tr:hover { background: var(--background-primary-subtle); }
 .notif-row { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3) 0; border-bottom: 1px solid var(--background-neutral); font-size: .84rem; }
 .notif-row:last-child { border-bottom: none; }
 .empty-state { text-align: center; padding: var(--space-8); color: var(--foreground-muted); font-size: .85rem; }
+.pcol-empty { text-align: center; padding: var(--space-5) var(--space-2); color: var(--foreground-muted); font-size: .74rem; border: 1px dashed var(--border); border-radius: var(--radius); }
+
+/* ===== ESTADOS DE CARGA (skeletons) ===== */
+@keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+.skeleton-block { background: var(--background-neutral); border-radius: 4px; animation: skeleton-pulse 1.1s ease-in-out infinite; }
+.skeleton-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-2); border-bottom: 1px solid var(--background-neutral); }
+.skeleton-avatar { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; }
+.skeleton-lines { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+.skeleton-card { border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-3); }
+.pcard.skeleton-card { cursor: default; }
 
 /* ===== CONFIGURACIÓN ===== */
 .settings-tabs { display: flex; gap: var(--space-2); margin-bottom: var(--space-5); }
@@ -2204,20 +2214,114 @@ document.getElementById('sidebar-toggle').addEventListener('click', () => {
   document.getElementById('main-sidebar').classList.toggle('collapsed');
 });
 
+/* ============================================================
+   ESTADOS DE CARGA (skeletons al entrar por primera vez a cada lista)
+   ============================================================ */
+function skeletonBarHtml(widthPct, heightPx) {
+  return `<div class="skeleton-block" style="width:${widthPct}%; height:${heightPx || 10}px;"></div>`;
+}
+
+function skeletonListHtml(count, opts) {
+  opts = opts || {};
+  const withAvatar = opts.avatar !== false;
+  return Array.from({ length: count }).map((_, i) => `
+    <div class="skeleton-row">
+      ${withAvatar ? '<div class="skeleton-block skeleton-avatar"></div>' : ''}
+      <div class="skeleton-lines">
+        ${skeletonBarHtml(55 - (i % 3) * 8, 11)}
+        ${skeletonBarHtml(32 + (i % 4) * 6, 9)}
+      </div>
+    </div>`).join('');
+}
+
+function skeletonTableRowsHtml(cols, rows) {
+  return Array.from({ length: rows }).map(() => `
+    <tr class="skeleton-row">
+      ${Array.from({ length: cols }).map(() => `<td>${skeletonBarHtml(50 + Math.round(Math.random() * 35), 11)}</td>`).join('')}
+    </tr>`).join('');
+}
+
+function skeletonCardGridHtml(count) {
+  return Array.from({ length: count }).map(() => `
+    <div class="skeleton-card">
+      <div class="skeleton-block" style="width:100%; height:80px; margin-bottom:10px; border-radius:6px;"></div>
+      ${skeletonBarHtml(70, 12)}
+      <div style="margin-top:8px">${skeletonBarHtml(40, 10)}</div>
+    </div>`).join('');
+}
+
+function skeletonKpiHtml(count) {
+  return Array.from({ length: count }).map(() => `
+    <div class="kpi">
+      ${skeletonBarHtml(50, 10)}
+      <div style="margin-top:10px">${skeletonBarHtml(65, 22)}</div>
+    </div>`).join('');
+}
+
+function skeletonPipelineHtml() {
+  return STAGE_ORDER.map(stage => `
+    <div class="pcol">
+      <div class="pcol-head"><span class="title">${STAGE_LABEL[stage]}</span></div>
+      <div class="pcard skeleton-card">${skeletonBarHtml(60, 12)}<div style="margin-top:8px">${skeletonBarHtml(35, 10)}</div></div>
+      <div class="pcard skeleton-card">${skeletonBarHtml(45, 12)}<div style="margin-top:8px">${skeletonBarHtml(50, 10)}</div></div>
+    </div>`).join('');
+}
+
+/* Cada entrada simula la carga inicial de esa lista/tabla la primera vez que se visita en la sesión;
+   las visitas siguientes renderizan directo, sin repetir la animación. */
+const VIEW_LOADING_CONFIG = {
+  inbox: { containers: [{ id: 'thread-list-items', skeleton: () => skeletonListHtml(6) }], render: () => renderThreadList() },
+  dashboard: { containers: [{ id: 'dashboard-kpis', skeleton: () => skeletonKpiHtml(4) }], render: () => renderDashboard() },
+  pipeline: { containers: [{ id: 'pipeline-board', skeleton: () => skeletonPipelineHtml() }], render: () => renderPipeline() },
+  contacts: { containers: [{ id: 'contacts-tbody', skeleton: () => skeletonTableRowsHtml(6, 6) }], render: () => renderContactsTable() },
+  calendar: { containers: [{ id: 'upcoming-events-list', skeleton: () => skeletonListHtml(4, { avatar: false }) }], render: () => renderCalendar() },
+  tasks: { containers: [{ id: 'tasks-list', skeleton: () => skeletonListHtml(4, { avatar: false }) }], render: () => refreshTaskViews() },
+  products: { containers: [{ id: 'product-grid', skeleton: () => skeletonCardGridHtml(6) }], render: () => renderProductGrid() },
+  orders: { containers: [{ id: 'orders-tbody', skeleton: () => skeletonTableRowsHtml(7, 6) }], render: () => renderOrdersTable() },
+  templates: { containers: [{ id: 'template-grid', skeleton: () => skeletonCardGridHtml(6) }], render: () => renderTemplates() },
+  campaigns: { containers: [{ id: 'campaigns-tbody', skeleton: () => skeletonTableRowsHtml(6, 4) }], render: () => renderCampaignsTable() },
+  reports: {
+    containers: [
+      { id: 'report-seller-tbody', skeleton: () => skeletonTableRowsHtml(6, 4) },
+      { id: 'report-stage-tbody', skeleton: () => skeletonTableRowsHtml(4, 5) },
+      { id: 'report-tag-tbody', skeleton: () => skeletonTableRowsHtml(3, 4) }
+    ],
+    render: () => renderReports()
+  },
+  help: {
+    containers: [
+      { id: 'faq-accordion', skeleton: () => skeletonListHtml(4, { avatar: false }) },
+      { id: 'support-tickets-list', skeleton: () => skeletonListHtml(2, { avatar: false }) }
+    ],
+    render: () => { renderFaqs(); renderSupportTickets(); }
+  }
+};
+
+let loadedViews = new Set();
+
+/* La primera vez que se entra a una vista con lista, muestra un skeleton breve antes de
+   renderizar los datos reales (simula una carga de red). Las visitas siguientes son instantáneas. */
+function primeViewLoading(viewName) {
+  const cfg = VIEW_LOADING_CONFIG[viewName];
+  if (!cfg) return;
+  if (loadedViews.has(viewName)) { cfg.render(); return; }
+  loadedViews.add(viewName);
+  cfg.containers.forEach(({ id, skeleton }) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = skeleton();
+  });
+  setTimeout(cfg.render, 400 + Math.round(Math.random() * 200));
+}
+
 function switchToView(viewName) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   const navItem = document.querySelector(`.nav-item[data-view="${viewName}"]`);
   if (navItem) navItem.classList.add('active');
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + viewName).classList.add('active');
-  if (viewName === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+  primeViewLoading(viewName);
   if (viewName === 'myaccount' && typeof renderMyAccount === 'function') renderMyAccount();
-  if (viewName === 'reports' && typeof renderReports === 'function') renderReports();
-  if (viewName === 'calendar' && typeof renderCalendar === 'function') renderCalendar();
-  if (viewName === 'tasks' && typeof refreshTaskViews === 'function') refreshTaskViews();
-  if (viewName === 'products' && typeof renderProductGrid === 'function') renderProductGrid();
   if (viewName === 'billing' && typeof renderBilling === 'function') renderBilling();
-  if (viewName === 'help' && typeof renderFaqs === 'function') { renderFaqs(); renderSupportTickets(); }
 }
 
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -2664,7 +2768,7 @@ function renderCtxCustomFields(c) {
     <div class="ctx-custom-field-row">
       <span class="k">${escapeHtml(f.label)}</span>
       <span class="v">${escapeHtml(f.value)}<span class="fx" data-remove-ctx-field="${i}">×</span></span>
-    </div>`).join('');
+    </div>`).join('') || '<div class="empty-state" style="padding:var(--space-2) 0">Sin campos personalizados</div>';
   wrap.querySelectorAll('[data-remove-ctx-field]').forEach(x => {
     x.addEventListener('click', () => {
       c.customFields.splice(Number(x.dataset.removeCtxField), 1);
@@ -2675,11 +2779,12 @@ function renderCtxCustomFields(c) {
 
 function renderCtxNotes(c) {
   const wrap = document.getElementById('ctx-notes');
-  wrap.innerHTML = c.notes.map(n => `
+  wrap.innerHTML = (c.notes.map(n => `
     <div class="note-item">
       ${escapeHtml(n.text)}
       <div class="nmeta"><span>${escapeHtml(n.author)} · ${n.date}</span><span class="nx" data-remove-ctx-note="${n.id}">Eliminar</span></div>
-    </div>`).join('') + `<button class="btn btn-ghost btn-sm" id="ctx-add-note" style="width:100%; justify-content:center; margin-top:var(--space-2)">+ Añadir Nuevo</button>`;
+    </div>`).join('') || '<div class="empty-state" style="padding:var(--space-3)">Sin notas todavía</div>')
+    + `<button class="btn btn-ghost btn-sm" id="ctx-add-note" style="width:100%; justify-content:center; margin-top:var(--space-2)">+ Añadir Nuevo</button>`;
   wrap.querySelectorAll('[data-remove-ctx-note]').forEach(x => {
     x.addEventListener('click', () => {
       c.notes = c.notes.filter(n => n.id !== Number(x.dataset.removeCtxNote));
@@ -2759,7 +2864,7 @@ function renderPipeline() {
             <div class="pval">${fmtMoney(c.value)}</div>
             <div class="pmeta"><span class="pchannel">${CHANNEL_LABEL[c.channel]}</span></div>
           </div>
-        `).join('')}
+        `).join('') || '<div class="pcol-empty">Sin contactos en esta etapa</div>'}
       </div>`;
   }).join('');
 
@@ -6068,6 +6173,8 @@ document.getElementById('google-login-btn').addEventListener('click', () => {
 function completeLogin() {
   document.getElementById('login-screen').classList.add('logged-in');
   showToast(`Bienvenida, ${state.myAccount.name} 👋`);
+  const activeViewEl = document.querySelector('.view.active');
+  if (activeViewEl) primeViewLoading(activeViewEl.id.replace('view-', ''));
   setTimeout(() => {
     document.getElementById('login-screen').style.display = 'none';
     showOnboardingModal();
@@ -6086,6 +6193,7 @@ function logout() {
   screen.style.display = 'flex';
   void screen.offsetWidth;
   screen.classList.remove('logged-in');
+  loadedViews = new Set();
   switchToView('dashboard');
 }
 
