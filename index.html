@@ -694,6 +694,18 @@ table.data tbody tr:hover { background: var(--background-primary-subtle); }
 .note-add-row { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
 .note-add-row textarea { flex: 1; border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-2) var(--space-3); font-size: .8rem; font-family: var(--font-inter); min-height: 50px; resize: vertical; }
 
+.timeline-item { display: flex; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 1px solid var(--background-neutral); }
+.timeline-item:last-child { border-bottom: none; }
+.timeline-icon { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .75rem; flex-shrink: 0; background: var(--background-primary-subtle); }
+.timeline-icon.tl-order { background: var(--background-secondary-subtle); }
+.timeline-icon.tl-note { background: #fdf3e0; }
+.timeline-icon.tl-tag { background: #e9f5ea; }
+.timeline-body { flex: 1; min-width: 0; font-size: .8rem; }
+.timeline-text { word-wrap: break-word; }
+.timeline-meta { font-size: .68rem; color: var(--foreground-muted); margin-top: 4px; display: flex; justify-content: space-between; gap: var(--space-2); }
+.timeline-meta .tx { cursor: pointer; }
+.timeline-meta .tx:hover { color: var(--destructive); }
+
 /* ===== TOAST ===== */
 .toast-container { position: fixed; bottom: var(--space-6); right: var(--space-6); display: flex; flex-direction: column; gap: var(--space-2); z-index: 300; }
 .toast {
@@ -1869,6 +1881,10 @@ let state = {
 
 function activeFlow() { return state.flows.find(f => f.id === state.activeFlowId); }
 
+const DAY_ABBR_TO_NUM = { dom: 0, lun: 1, mar: 2, mie: 3, jue: 4, vie: 5, sab: 6 };
+const MONTH_ES_TO_NUM = { enero: 0, febrero: 1, marzo: 2, abril: 3, mayo: 4, junio: 5, julio: 6, agosto: 7, septiembre: 8, octubre: 9, noviembre: 10, diciembre: 11 };
+const MONTHS_SHORT_ES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+
 state.contacts.forEach((c, i) => {
   if (!c.customFields) c.customFields = [];
   if (!c.notes) c.notes = [];
@@ -1878,6 +1894,7 @@ state.contacts.forEach((c, i) => {
   if (!c.media) c.media = [];
   if (!c.sequences) c.sequences = [];
   if (!c.errorLog) c.errorLog = [];
+  if (!c.tagLog) c.tagLog = c.tags.map((t, ti) => ({ tag: t, action: 'added', date: addDays(parseSinceToDate(c.since), 3 + ti * 4) }));
 });
 // Datos de ejemplo para mostrar las secciones del panel con contenido real
 state.contacts[0].callHistory = [ { type: 'Entrante', duration: '2m 14s', date: '05/09/2026 15:10' } ];
@@ -1952,6 +1969,141 @@ function fmtMoney(v) { return '$' + v.toLocaleString('es-UY'); }
 function nowTime() { const d = new Date(); return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0'); }
 function contactById(id) { return state.contacts.find(c => c.id === id); }
 function escapeHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+/* ============================================================
+   LÍNEA DE TIEMPO UNIFICADA POR CONTACTO (mensajes + pedidos + notas + tags)
+   ============================================================ */
+
+/* Convierte etiquetas relativas de mensajes ('09:41', 'ayer', 'lun', 'lun pasado') en Date reales,
+   ancladas a hoy, para poder intercalarlas con pedidos y notas (que sí tienen fecha exacta). */
+function messageLabelToDate(label, indexInThread) {
+  const d = new Date();
+  const hhmm = /^(\d{1,2}):(\d{2})$/.exec(label || '');
+  if (hhmm) { d.setHours(Number(hhmm[1]), Number(hhmm[2]), 0, 0); return d; }
+  let daysAgo = 0;
+  if (label === 'ayer') {
+    daysAgo = 1;
+  } else {
+    const pasadoMatch = /^(\w+) pasado$/.exec(label || '');
+    const dayToken = pasadoMatch ? pasadoMatch[1] : label;
+    const target = DAY_ABBR_TO_NUM[dayToken];
+    if (target !== undefined) {
+      daysAgo = (d.getDay() - target + 7) % 7;
+      if (daysAgo === 0) daysAgo = 7;
+      if (pasadoMatch) daysAgo += 7;
+    }
+  }
+  d.setDate(d.getDate() - daysAgo);
+  d.setHours(9, 0, 0, 0);
+  d.setMinutes(d.getMinutes() + (indexInThread || 0));
+  return d;
+}
+
+function parseDMY(dateStr) {
+  const [day, month, year] = (dateStr || '').split('/').map(Number);
+  return new Date(year || 1970, (month || 1) - 1, day || 1, 12, 0, 0);
+}
+
+/* "marzo 2026" -> Date del mes correspondiente, usada para sembrar fechas plausibles de etiquetas antiguas. */
+function parseSinceToDate(sinceStr) {
+  const [monthName, yearStr] = (sinceStr || '').split(' ');
+  const month = MONTH_ES_TO_NUM[monthName];
+  const year = Number(yearStr);
+  if (month === undefined || !year) return new Date();
+  return new Date(year, month, 15, 12, 0, 0);
+}
+
+function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate() + days); return d; }
+
+function getContactTimeline(c) {
+  const events = [];
+  const th = state.threads[c.id];
+  if (th) {
+    th.messages.forEach((m, i) => events.push({ type: 'message', date: messageLabelToDate(m.time, i), data: m }));
+  }
+  state.orders.filter(o => o.contactId === c.id).forEach(o => {
+    events.push({ type: 'order', date: new Date(o.date + 'T12:00:00'), data: o });
+  });
+  (c.notes || []).forEach(n => events.push({ type: 'note', date: parseDMY(n.date), data: n }));
+  (c.tagLog || []).forEach(tl => events.push({ type: 'tag', date: tl.date, data: tl }));
+  events.sort((a, b) => b.date - a.date);
+  return events;
+}
+
+function timelineDateLabel(ev) {
+  const d = ev.date;
+  const dayMonth = `${d.getDate()} ${MONTHS_SHORT_ES[d.getMonth()]}`;
+  if (ev.type === 'message') {
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    return `${dayMonth} · ${hh}:${mm}`;
+  }
+  return dayMonth;
+}
+
+function timelineItemHtml(ev) {
+  const dateLabel = timelineDateLabel(ev);
+  if (ev.type === 'message') {
+    const m = ev.data;
+    const who = m.from === 'out' ? 'Vos' : m.from === 'bot' ? 'Bot' : 'Cliente';
+    return `
+      <div class="timeline-item">
+        <div class="timeline-icon tl-message">💬</div>
+        <div class="timeline-body">
+          <div class="timeline-text">${escapeHtml(m.text)}</div>
+          <div class="timeline-meta"><span>${who}${m.label ? ' · ' + escapeHtml(m.label) : ''}</span><span>${dateLabel}</span></div>
+        </div>
+      </div>`;
+  }
+  if (ev.type === 'order') {
+    const o = ev.data;
+    return `
+      <div class="timeline-item">
+        <div class="timeline-icon tl-order">🛒</div>
+        <div class="timeline-body">
+          <div class="timeline-text">Pedido #${o.id} · ${fmtMoney(o.total)}${o.product ? ' · ' + escapeHtml(o.product) : ''}</div>
+          <div class="timeline-meta"><span>${orderStatusLabel(o.status)}</span><span>${dateLabel}</span></div>
+        </div>
+      </div>`;
+  }
+  if (ev.type === 'note') {
+    const n = ev.data;
+    return `
+      <div class="timeline-item">
+        <div class="timeline-icon tl-note">📝</div>
+        <div class="timeline-body">
+          <div class="timeline-text">${escapeHtml(n.text)}</div>
+          <div class="timeline-meta"><span>${escapeHtml(n.author)}${n.id != null ? ` · <span class="tx" data-remove-note="${n.id}">Eliminar</span>` : ''}</span><span>${dateLabel}</span></div>
+        </div>
+      </div>`;
+  }
+  const tl = ev.data;
+  return `
+    <div class="timeline-item">
+      <div class="timeline-icon tl-tag">🏷️</div>
+      <div class="timeline-body">
+        <div class="timeline-text">Etiqueta ${tl.action === 'removed' ? 'quitada' : 'agregada'}: "${escapeHtml(tl.tag)}"</div>
+        <div class="timeline-meta"><span>${dateLabel}</span></div>
+      </div>
+    </div>`;
+}
+
+function renderContactTimeline(c) {
+  const wrap = document.getElementById('panel-timeline');
+  if (!wrap) return;
+  const events = getContactTimeline(c);
+  wrap.innerHTML = events.length
+    ? events.map(timelineItemHtml).join('')
+    : '<div class="empty-state" style="padding:var(--space-4)">Sin actividad registrada todavía</div>';
+
+  wrap.querySelectorAll('[data-remove-note]').forEach(x => {
+    x.addEventListener('click', () => {
+      c.notes = c.notes.filter(n => n.id !== Number(x.dataset.removeNote));
+      renderContactTimeline(c);
+      showToast('Nota eliminada');
+    });
+  });
+}
 
 /* ============================================================
    TOASTS
@@ -2753,8 +2905,6 @@ function computeTopProduct(contactId) {
 function openContactDetail(contactId) {
   currentPanelContactId = contactId;
   const c = contactById(contactId);
-  const th = state.threads[c.id];
-  const orders = state.orders.filter(o => o.contactId === c.id);
   const topProduct = computeTopProduct(c.id);
   document.getElementById('side-panel').innerHTML = `
     <button class="side-panel-close" onclick="closePanel()">✕</button>
@@ -2779,21 +2929,28 @@ function openContactDetail(contactId) {
     <h3 style="margin-top:var(--space-5)">Campos personalizados</h3>
     <div id="panel-custom-fields"></div>
 
-    <h3 style="margin-top:var(--space-5)">Notas</h3>
-    <div id="panel-notes"></div>
-
-    <h3 style="margin-top:var(--space-5)">Historial de conversación</h3>
-    ${th.messages.map(m => `<div class="history-item">${escapeHtml(m.text)}<div class="hmeta">${m.from === 'out' ? 'Vos' : m.from === 'bot' ? 'Bot' : c.name} · ${m.time}</div></div>`).join('')}
-
-    <h3 style="margin-top:var(--space-5)">Pedidos</h3>
-    ${orders.map(o => `<div class="order-mini"><span class="oid">#${o.id}</span><span class="oval">${fmtMoney(o.total)}</span><div class="ostatus">${o.product ? escapeHtml(o.product) + ' · ' : ''}${orderStatusLabel(o.status)}</div></div>`).join('') || '<div class="empty-state" style="padding:var(--space-4)">Sin pedidos aún</div>'}
+    <h3 style="margin-top:var(--space-5)">Línea de tiempo</h3>
+    <div class="note-add-row"><textarea id="new-note-text" placeholder="Escribí una nota sobre este contacto..."></textarea></div>
+    <div style="text-align:right; margin-top:var(--space-2); margin-bottom:var(--space-4)"><button class="btn btn-accent btn-sm" id="panel-add-note">+ Agregar nota</button></div>
+    <div id="panel-timeline"></div>
   `;
   document.getElementById('side-panel').classList.add('active');
   document.getElementById('panel-overlay').classList.add('active');
   renderPanelTags(c);
   renderCustomFields(c);
-  renderNotes(c);
+  renderContactTimeline(c);
   renderContactTasks(c);
+
+  document.getElementById('panel-add-note').addEventListener('click', () => {
+    const text = document.getElementById('new-note-text').value.trim();
+    if (!text) return;
+    const today = new Date();
+    const dateStr = String(today.getDate()).padStart(2, '0') + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + today.getFullYear();
+    c.notes.push({ id: nextNoteId++, text, author: 'Julia Méndez', date: dateStr });
+    document.getElementById('new-note-text').value = '';
+    renderContactTimeline(c);
+    showToast('Nota agregada');
+  });
 }
 
 function renderCustomFields(c) {
@@ -2823,35 +2980,6 @@ function renderCustomFields(c) {
   });
 }
 
-function renderNotes(c) {
-  const wrap = document.getElementById('panel-notes');
-  wrap.innerHTML = c.notes.map(n => `
-    <div class="note-item">
-      ${escapeHtml(n.text)}
-      <div class="nmeta"><span>${escapeHtml(n.author)} · ${n.date}</span><span class="nx" data-remove-note="${n.id}">Eliminar</span></div>
-    </div>
-  `).join('') + (c.notes.length ? '' : '<div class="empty-state" style="padding:var(--space-3)">Sin notas todavía</div>')
-    + `<div class="note-add-row"><textarea id="new-note-text" placeholder="Escribí una nota sobre este contacto..."></textarea></div>
-       <div style="text-align:right; margin-top:var(--space-2)"><button class="btn btn-accent btn-sm" id="panel-add-note">+ Agregar nota</button></div>`;
-
-  wrap.querySelectorAll('[data-remove-note]').forEach(x => {
-    x.addEventListener('click', () => {
-      c.notes = c.notes.filter(n => n.id !== Number(x.dataset.removeNote));
-      renderNotes(c);
-      showToast('Nota eliminada');
-    });
-  });
-  document.getElementById('panel-add-note').addEventListener('click', () => {
-    const text = document.getElementById('new-note-text').value.trim();
-    if (!text) return;
-    const today = new Date();
-    const dateStr = String(today.getDate()).padStart(2, '0') + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + today.getFullYear();
-    c.notes.push({ id: nextNoteId++, text, author: 'Julia Méndez', date: dateStr });
-    renderNotes(c);
-    showToast('Nota agregada');
-  });
-}
-
 function renderPanelTags(c) {
   const wrap = document.getElementById('panel-tags');
   wrap.innerHTML = c.tags.map(t => `<span class="tag ${tagClass(t)}">${t}<span class="tag-x" data-remove-tag="${t}">×</span></span>`).join('')
@@ -2859,18 +2987,23 @@ function renderPanelTags(c) {
   wrap.querySelectorAll('[data-remove-tag]').forEach(x => {
     x.addEventListener('click', () => {
       c.tags = c.tags.filter(t => t !== x.dataset.removeTag);
+      c.tagLog.push({ tag: x.dataset.removeTag, action: 'removed', date: new Date() });
       renderPanelTags(c);
       renderContactsTable();
       renderThreadList();
+      if (currentPanelContactId === c.id) renderContactTimeline(c);
       if (state.activeContactId === c.id) renderContextPanel();
     });
   });
   document.getElementById('panel-add-tag').addEventListener('click', () => {
     openPromptModal('Agregar etiqueta', [{ id: 'new-panel-tag-name', label: 'Nombre del tag', placeholder: 'ej: VIP, Lead, Urgente' }], (values) => {
-      c.tags.push(values['new-panel-tag-name']);
+      const tag = values['new-panel-tag-name'];
+      c.tags.push(tag);
+      c.tagLog.push({ tag, action: 'added', date: new Date() });
       renderPanelTags(c);
       renderContactsTable();
       renderThreadList();
+      if (currentPanelContactId === c.id) renderContactTimeline(c);
       if (state.activeContactId === c.id) renderContextPanel();
     });
   });
