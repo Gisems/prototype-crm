@@ -53,3 +53,7 @@ Husky vive en la raíz (el `.git` es uno solo): `pre-commit` corre lint-staged p
 - Las reglas son estrictas a propósito: se relajan con un `override` acotado o un `oxlint-disable-next-line` con el motivo, nunca globalmente.
 - Una promesa sin `await` es error de lint: `void fn()` si es a propósito.
 - Commits convencionales (`feat(contacts): ...`).
+
+## Commits y PRs
+
+- No agregar atribución a Claude en commits ni en descripciones de PR: ni `Co-Authored-By: Claude ...` ni "Generated with Claude Code". Los commits deben quedar solo a nombre del usuario.
