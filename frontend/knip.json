@@ -1,0 +1,10 @@
+{
+  "project": ["src/**/*.{ts,tsx,css}"],
+  "ignore": ["src/shared/components/ui/*.{ts,tsx}"],
+  "rules": {
+    "files": "warn",
+    "exports": "warn",
+    "types": "warn",
+    "enumMembers": "warn"
+  }
+}
