@@ -1,0 +1,36 @@
+# dependencies
+node_modules
+
+# build output
+dist
+build
+.react-router
+*.tsbuildinfo
+
+# testing
+coverage
+
+# logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# env
+.env
+.env.*
+!.env.example
+
+# npm credentials
+*.npmrc
+
+# OS / IDE
+.DS_Store
+.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# misc
+.temp
+.tmp

@@ -1,0 +1,6 @@
+{
+  "backend/**/*.{js,mjs,cjs,ts,mts,cts}": ["pnpm --filter @g2i/crm-backend exec oxlint --fix", "pnpm --filter @g2i/crm-backend exec oxfmt --no-error-on-unmatched-pattern"],
+  "backend/**/*.{json,jsonc,yaml,yml,md}": "pnpm --filter @g2i/crm-backend exec oxfmt --no-error-on-unmatched-pattern",
+  "frontend/**/*.{js,jsx,ts,tsx}": ["pnpm --filter @g2i/crm-frontend exec oxlint --fix", "pnpm --filter @g2i/crm-frontend exec oxfmt --no-error-on-unmatched-pattern"],
+  "frontend/**/*.{json,jsonc,css,yaml,yml,md}": "pnpm --filter @g2i/crm-frontend exec oxfmt --no-error-on-unmatched-pattern"
+}

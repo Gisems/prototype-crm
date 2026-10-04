@@ -1,0 +1,12 @@
+packages:
+  - backend
+  - frontend
+overrides:
+  'fastify': '^5.12.5'
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  sharp: false
+  'unrs-resolver': true
+  workerd: false
