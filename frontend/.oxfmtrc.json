@@ -20,5 +20,5 @@
     "functions": ["cn", "cva"]
   },
   "sortPackageJson": true,
-  "ignorePatterns": ["dist/", "build/", ".react-router/", "pnpm-lock.yaml"]
+  "ignorePatterns": ["dist/", "build/", ".react-router/", "public/prototype/", "pnpm-lock.yaml"]
 }
