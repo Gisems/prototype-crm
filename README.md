@@ -11,9 +11,9 @@ Contraseña: @Testcrm
 
 ## Qué es esto
 
-Todo el proyecto vive en **un único archivo HTML** (`index.html`) con CSS y JavaScript vanilla embebidos — sin frameworks, sin build step, sin backend. Todo el estado corre en memoria del navegador (no hay base de datos ni persistencia real): es una referencia de comportamiento y diseño para construir el producto real más adelante.
+Todo el proyecto vive en **un único archivo HTML** (`frontend/public/prototype/index.html`) con CSS y JavaScript vanilla embebidos — sin frameworks, sin build step, sin backend. Todo el estado corre en memoria del navegador (no hay base de datos ni persistencia real): es una referencia de comportamiento y diseño para construir el producto real más adelante.
 
-Para el detalle completo de qué incluye cada sección, el sistema de diseño y el modelo de datos, ver [`resumen-proyecto-chatg2i.md`](./resumen-proyecto-chatg2i.md).
+Para el detalle completo de qué incluye cada sección, el sistema de diseño y el modelo de datos, ver [`docs/prototype/resumen-proyecto-chatg2i.md`](./docs/prototype/resumen-proyecto-chatg2i.md).
 
 ## Funcionalidades principales
 
@@ -29,7 +29,7 @@ Para el detalle completo de qué incluye cada sección, el sistema de diseño y 
 
 ## Correr el proyecto localmente
 
-Es un HTML estático — no hace falta instalar nada. Alcanza con abrir `index.html` directo en el navegador.
+Es un HTML estático — no hace falta instalar nada. Alcanza con abrir `frontend/public/prototype/index.html` directo en el navegador, o correr `pnpm dev:front` y entrar a `/prototype`.
 
 Para ver los cambios en vivo mientras editás:
 
@@ -39,6 +39,18 @@ npx live-server
 
 (o la extensión **LiveServer** si estás en el editor Zed).
 
+## Monolito (en construcción)
+
+El repo también aloja la versión real del producto, que se irá construyendo tomando `frontend/public/prototype/index.html` como referencia:
+
+```
+backend/    NestJS + Fastify + TypeORM (PostgreSQL)   → pnpm dev:back  (5080)
+frontend/   React Router (SPA) + Vite + Tailwind     → pnpm dev:front (5008)
+frontend/public/prototype/   prototipo original en HTML, visible en http://localhost:5008/prototype
+```
+
+Requiere Node ≥ 24.9 y pnpm 11. Instalar con `pnpm install`, copiar `backend/.env.example` y `frontend/.env.example` a `.env`, y validar con `pnpm check`. Más detalle en [`CLAUDE.md`](./CLAUDE.md).
+
 ## Deploy
 
-El repo está conectado a [Vercel](https://vercel.com) como sitio estático — cualquier push a `main` se despliega automáticamente en la URL de arriba.
+Por ahora no hay deploy: el prototipo ya no está en la raíz, así que Vercel dejará de encontrar un `index.html` en el próximo push a `main`. Cuando se despliegue, el prototipo quedará en la ruta `/prototype` del frontend.
