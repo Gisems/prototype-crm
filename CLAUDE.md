@@ -43,7 +43,7 @@ Husky vive en la raíz (el `.git` es uno solo): `pre-commit` corre lint-staged p
 - Rutas en `src/routes.ts` con strings de `PATHS` (`router/paths.ts`); ahí los imports son relativos a propósito (el loader de RR no ve los alias).
 - `shared/` nunca importa de `core/` (lo hace cumplir el lint). `core/` = servicios, store, modelos de dominio; `shared/` = UI y utilidades sin dominio.
 - Imports absolutos desde `src` (`core/lib/api`, `shared/...`), sin `@/`. No agregues `baseUrl` ni `esModuleInterop: false` al tsconfig.
-- `shared/components/ui/` es código de shadcn tal cual se genera (`pnpm dlx shadcn add <component>`, estilo `base-nova`): no se edita a mano.
+- `shared/components/ui/` es código de shadcn tal cual se genera (`pnpm dlx shadcn add <component>`, estilo `base-nova`): no se edita a mano, con una excepción: `button.tsx` suma la variante `accent` (el botón coral de la marca, que siempre mide 40 px por una `compoundVariants`) y el tamaño `action` (esos mismos 40 px, para un botón de contorno al lado de uno coral). Un `shadcn add button --overwrite` los borra: hay que volver a ponerlos.
 - Tokens de color en `shared/styles/globals.css`, tomados del prototipo (teal `#004952`, coral `#ed7755`, amarillo `#ffdf9f`).
 - No se usan `alert()`/`confirm()`/`prompt()` nativos: modales y toasts propios.
 
