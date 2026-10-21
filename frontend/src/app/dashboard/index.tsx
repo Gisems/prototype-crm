@@ -1,3 +1,5 @@
+export const handle = { title: "Dashboard", description: "Resumen de tu actividad" }
+
 export default function DashboardPage() {
-  return <h1 className="text-2xl font-bold">Dashboard</h1>
+  return <p className="text-muted-foreground">Próximamente</p>
 }
