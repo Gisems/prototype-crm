@@ -25,7 +25,7 @@ export default function LoginPage() {
 
   function onSubmit(values: SignInFormValues) {
     mutate(toSignInDto(values, rememberMe), {
-      onSuccess: () => void navigate(PATHS.DASHBOARD, { replace: true }),
+      onSuccess: () => void navigate(PATHS.DASHBOARD.INDEX, { replace: true }),
       // Copia única a propósito: distinguir "correo no existe" de "contraseña incorrecta" revela qué correos tienen cuenta.
       onError: () => toast.error("Correo o contraseña incorrectos"),
     })

@@ -27,7 +27,7 @@ export const menu: MenuGroup[] = [
   {
     label: "Principal",
     items: [
-      { label: "Dashboard", icon: LayoutDashboard, href: PATHS.DASHBOARD },
+      { label: "Dashboard", icon: LayoutDashboard, href: PATHS.DASHBOARD.INDEX },
       { label: "Inbox", icon: Inbox, href: PATHS.INBOX, soon: true },
       { label: "Etapas de venta", icon: Columns3, href: PATHS.PIPELINE, soon: true },
       { label: "Contactos", icon: Users, href: PATHS.CONTACTS.INDEX },

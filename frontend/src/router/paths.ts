@@ -1,7 +1,13 @@
 export const PATHS = {
   ROOT: "/",
   LOGIN: "/login",
-  DASHBOARD: "/dashboard",
+  DASHBOARD: {
+    INDEX: "/dashboard",
+    // Segmentos relativos a `INDEX`: los usa routes.ts para anidar cada pestaña bajo el layout del Dashboard.
+    TABS: { SALES: "sales", CONVERSATIONS: "conversations" },
+    SALES: "/dashboard/sales",
+    CONVERSATIONS: "/dashboard/conversations",
+  },
   INBOX: "/inbox",
   PIPELINE: "/pipeline",
   CONTACTS: {

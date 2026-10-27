@@ -8,7 +8,7 @@ export default function AppAuth() {
 
   if (isLoading) return null
 
-  if (isAuthenticated) return <Navigate to={PATHS.DASHBOARD} replace />
+  if (isAuthenticated) return <Navigate to={PATHS.DASHBOARD.INDEX} replace />
 
   return (
     <div className="flex min-h-svh items-center justify-center bg-[image:var(--gradient-hero)] p-5">

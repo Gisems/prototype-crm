@@ -9,7 +9,11 @@ export default [
   route(PATHS.PROTOTYPE, "./app/prototype/index.tsx"),
   layout("./layouts/app-auth/app-auth.tsx", [route(PATHS.LOGIN, "./app/login/index.tsx")]),
   layout("./layouts/app-layout/app-layout.tsx", [
-    route(PATHS.DASHBOARD, "./app/dashboard/index.tsx"),
+    route(PATHS.DASHBOARD.INDEX, "./app/dashboard/pages/dashboard.tsx", [
+      index("./app/dashboard/pages/dashboard/index.tsx"),
+      route(PATHS.DASHBOARD.TABS.SALES, "./app/dashboard/pages/dashboard/sales.tsx"),
+      route(PATHS.DASHBOARD.TABS.CONVERSATIONS, "./app/dashboard/pages/dashboard/conversations.tsx"),
+    ]),
     route(PATHS.CONTACTS.INDEX, "./app/contacts/pages/contacts.tsx", [
       index("./app/contacts/pages/contacts/index.tsx"),
       route(PATHS.CONTACTS.TABS.CUSTOMERS, "./app/contacts/pages/contacts/customers.tsx"),
