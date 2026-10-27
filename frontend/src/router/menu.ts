@@ -11,7 +11,6 @@ import {
   Megaphone,
   Package,
   Settings,
-  SquareCheck,
   Tag,
   Users,
   Zap,
@@ -31,8 +30,7 @@ export const menu: MenuGroup[] = [
       { label: "Inbox", icon: Inbox, href: PATHS.INBOX, soon: true },
       { label: "Etapas de venta", icon: Columns3, href: PATHS.PIPELINE, soon: true },
       { label: "Contactos", icon: Users, href: PATHS.CONTACTS.INDEX },
-      { label: "Calendario", icon: CalendarDays, href: PATHS.CALENDAR, soon: true },
-      { label: "Tareas", icon: SquareCheck, href: PATHS.TASKS, soon: true },
+      { label: "Calendario", icon: CalendarDays, href: PATHS.CALENDAR },
     ],
   },
   {

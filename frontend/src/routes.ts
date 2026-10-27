@@ -19,6 +19,7 @@ export default [
       route(PATHS.CONTACTS.TABS.CUSTOMERS, "./app/contacts/pages/contacts/customers.tsx"),
       route(PATHS.CONTACTS.TABS.SUPPLIERS, "./app/contacts/pages/contacts/suppliers.tsx"),
     ]),
+    route(PATHS.CALENDAR, "./app/calendar/pages/calendar.tsx"),
     route(PATHS.CATALOG.INDEX, "./app/catalog/pages/catalog.tsx"),
     route(PATHS.CATALOG.IMPORT, "./app/catalog/pages/import.tsx"),
     route(PATHS.CATALOG.DETAIL_ROUTE, "./app/catalog/pages/product.tsx"),

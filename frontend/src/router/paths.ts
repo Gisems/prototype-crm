@@ -18,7 +18,6 @@ export const PATHS = {
     SUPPLIERS: "/contacts/suppliers",
   },
   CALENDAR: "/calendar",
-  TASKS: "/tasks",
   BOTS: "/bots",
   TEMPLATES: "/templates",
   CAMPAIGNS: "/campaigns",

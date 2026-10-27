@@ -17,4 +17,5 @@ export enum QueryKeysEnum {
   PAYMENT_METHOD = "payment-method",
   INVOICES = "invoices",
   DASHBOARD = "dashboard",
+  EVENTS = "events",
 }
