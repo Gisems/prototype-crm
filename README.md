@@ -49,7 +49,41 @@ frontend/   React Router (SPA) + Vite + Tailwind     → pnpm dev:front (5008)
 frontend/public/prototype/   prototipo original en HTML, visible en http://localhost:5008/prototype
 ```
 
-Requiere Node ≥ 24.9 y pnpm 11. Instalar con `pnpm install`, copiar `backend/.env.example` y `frontend/.env.example` a `.env`, y validar con `pnpm check`. Más detalle en [`CLAUDE.md`](./CLAUDE.md).
+Más detalle en [`CLAUDE.md`](./CLAUDE.md).
+
+### Levantar el front y el back
+
+Requisitos: Node ≥ 24.9, pnpm 11 y una base PostgreSQL accesible para el backend.
+
+1. Instalar dependencias (desde la raíz):
+
+   ```bash
+   pnpm install
+   ```
+
+2. Crear los `.env` a partir de los ejemplos:
+
+   ```bash
+   cp backend/.env.example backend/.env
+   cp frontend/.env.example frontend/.env
+   ```
+
+   En `backend/.env` hay que completar los datos de conexión a PostgreSQL (una clave que falta hace fallar el arranque). En `frontend/.env`, `VITE_API_URL` debe apuntar al backend (`http://localhost:5080`).
+
+3. Levantar cada uno en su propia terminal, desde la raíz:
+
+   ```bash
+   pnpm dev:back    # backend  → http://localhost:5080
+   pnpm dev:front   # frontend → http://localhost:5008
+   ```
+
+Otros comandos útiles:
+
+```bash
+pnpm check   # lint + formato + typecheck (antes de pushear)
+pnpm fix     # corrige lint y formato
+pnpm build   # build de ambos paquetes
+```
 
 ## Deploy
 
