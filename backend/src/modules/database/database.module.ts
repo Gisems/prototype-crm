@@ -20,7 +20,6 @@ import { TypeOrmModule } from '@nestjs/typeorm'
           // El search_path excluye `public`, donde vive uuid-ossp, así que uuid_generate_v4() no se resuelve.
           // gen_random_uuid() está en pg_catalog (core desde PG13) y siempre es visible.
           uuidExtension: 'pgcrypto',
-          synchronize: configService.get<string>('POSTGRES_SYNCHRONIZE') === 'true',
           ssl: configService.get<string>('POSTGRES_SSL') === 'true' ? { rejectUnauthorized: true } : false,
           autoLoadEntities: true,
           timezone: 'Z',
